@@ -152,9 +152,3 @@ fun App() {
         }
     }
 }
-
-@Preview
-@Composable
-fun test() {
-    App()
-}

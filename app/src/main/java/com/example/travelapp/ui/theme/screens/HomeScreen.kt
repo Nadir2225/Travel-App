@@ -4,10 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,18 +24,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,20 +41,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.travelapp.R
 import com.example.travelapp.models.Transport
 import com.example.travelapp.ui.theme.BackgroundGray
 import com.example.travelapp.ui.theme.DividerGray
-import com.example.travelapp.ui.theme.IconGray
 import com.example.travelapp.ui.theme.PrimaryPurple
 import com.example.travelapp.ui.theme.StrokeGray
 import com.example.travelapp.ui.theme.TextGray
@@ -71,6 +60,8 @@ import com.example.travelapp.ui.theme.TextGray
 fun HomeScreen() {
     val columnScrollState = rememberScrollState()
     val transportsScrollState = rememberScrollState()
+    val offersScrollState = rememberScrollState()
+    val journeyScrollState = rememberScrollState()
     var text by remember { mutableStateOf("") }
     var text2 by remember { mutableStateOf("") }
     var text3 by remember { mutableStateOf("") }
@@ -491,6 +482,24 @@ fun HomeScreen() {
             }
             Spacer(modifier = Modifier.height(10.dp))
         }
+        SectionTitle(sectionName = "Best offers")
+        Row(
+            modifier = Modifier.horizontalScroll(offersScrollState)
+        ) {
+            Spacer(modifier = Modifier.width(16.dp))
+            OfferCard(R.drawable.offer1, smallTitle = "Cupid's Gift for Couples", bigTitle = "Up to 30% OFF*")
+            Spacer(modifier = Modifier.width(15.dp))
+            OfferCard(R.drawable.offer2, smallTitle = "FOR YOU", bigTitle = "Jaisi Zaroorat, Waisa Stay!")
+        }
+        SectionTitle(sectionName = "Winter Journey")
+        Row(
+            modifier = Modifier.horizontalScroll(journeyScrollState)
+        ) {
+            Spacer(modifier = Modifier.width(16.dp))
+            JourneyCard("Shimla Best Kept Seceret", R.drawable.journey1, R.drawable.grad1)
+            Spacer(modifier = Modifier.width(15.dp))
+            JourneyCard("Charming Kasol Vibes", R.drawable.journey2, R.drawable.grad2)
+        }
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
@@ -522,5 +531,108 @@ fun TransportComponent(name: String, icon: Int, selectedItem: String, thisItem: 
         }
         Spacer(modifier = Modifier.height(7.dp))
         Text(text = name, color = if (selectedItem == thisItem) Color.Black else TextGray, fontWeight = if (selectedItem == thisItem) FontWeight.Bold else FontWeight.Normal)
+    }
+}
+
+@Composable
+fun SectionTitle(sectionName: String) {
+    Spacer(modifier = Modifier.height(20.dp))
+    Row(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = sectionName, fontSize = 22.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "See all", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = PrimaryPurple)
+            Spacer(modifier = Modifier.width(5.dp))
+            Icon(painter = painterResource(id = R.drawable.right_arrow), contentDescription = null, tint = PrimaryPurple)
+        }
+    }
+    Spacer(modifier = Modifier.height(20.dp))
+}
+
+@Composable
+fun OfferCard(img: Int, smallTitle: String, bigTitle: String) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        modifier = Modifier
+            .width(304.dp)
+            .height(179.dp),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp)
+        ) {
+            Image(
+                painter = painterResource(img),
+                contentDescription = null,
+                modifier = Modifier
+                    .height(111.dp)
+                    .width(280.dp)
+            )
+            Text(text = smallTitle, color = Color.Black, fontWeight = FontWeight.SemiBold, fontSize = 10.sp)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = bigTitle, color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                Text(text = "View Detail", color = PrimaryPurple, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, textDecoration = TextDecoration.Underline)
+            }
+        }
+    }
+}
+
+@Composable
+fun JourneyCard(title: String, img: Int, grad: Int) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        modifier = Modifier
+            .width(206.dp)
+            .height(139.dp),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .width(182.dp)
+                    .height(119.dp)
+            ) {
+                Image(
+                    painter = painterResource(img),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                )
+                Image(
+                    painter = painterResource(grad),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                )
+                Text(
+                    text = title,
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(start = 8.dp, bottom = 15.dp, end = 10.dp).align(Alignment.BottomStart)
+                )
+            }
+        }
     }
 }
